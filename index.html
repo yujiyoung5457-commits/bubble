@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="kor">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <style>
+        ::-webkit-scrollbar{
+            display: none;
+        }
+        *{
+            background-image: url(./img/bada.jpg);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <canvas></canvas>
+
+    <script>
+        const canvas=document.querySelector("canvas")
+        const ctx=canvas.getContext("2d")
+       canvas.width=window.innerWidth
+       canvas.height=window.innerHeight
+
+        let cc=[]
+        for(let i=0; i<110; i++){
+            cc.push({
+                x:Math.random()*canvas.width,
+                y:Math.random()*canvas.height,
+                r: Math.random()*90,
+                speedX: -3+Math.random()*8,
+                speedY: -3+Math.random()*8,
+                color: `hsla(${Math.random()*360}, 70%, 80%, 0.4)`
+            })
+        }
+
+        function ani(){
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            for(let i=0; i<cc.length; i++){
+                let round=cc[i]
+                round.x+=round.speedX
+                round.y+=round.speedY
+                if(round.x+round.r>canvas.width || round.x-round.r<0){
+                    round.speedX=round.speedX*-1
+                }
+                if(round.y+round.r>canvas.height || round.y-round.r<0){
+                    round.speedY=round.speedY*-1
+                }
+
+                ctx.beginPath()
+                ctx.arc(round.x, round.y, round.r, 0, Math.PI*2)
+                let gr=ctx.createRadialGradient( 
+                    round.x - round.r * 0.35,
+                    round.y - round.r * 0.3,
+                    round.r * 0.1,
+                    round.x,
+                    round.y,
+                    round.r)
+                gr.addColorStop(0., "white")
+                gr.addColorStop(0.25, round.color)
+                // gr.addColorStop(0.2, "rgba(225, 225, 225, 0.3)")
+                gr.addColorStop(1,"rgba(225, 225, 225, 0.3)" )
+                ctx.fillStyle=gr
+                // ctx.fillStyle=round.color
+                ctx.strokeStyle=round.color
+                ctx.lineWidth=2
+                ctx.stroke()
+                ctx.fill()
+                // canvas.style.backgroundImage="url('./img/bada.jpg')"
+            }
+             requestAnimationFrame(ani)
+        }
+        ani()
+         window.addEventListener("resize", function(){
+            canvas.width=window.innerWidth
+            canvas.height=window.innerHeight
+        })
+
+        
+    </script>
+</body>
+</html>
